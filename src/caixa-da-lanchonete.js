@@ -5,19 +5,16 @@
  * 
  * Esse objeto irá conter dois atributos: produtos e combos.
  * 
- * O atributo produtos irá conter um objeto com todos os produtos disponíveis na lanchonete.
- * Cada produto será representado por um objeto com os atributos descricao, preco e depends.
- * O depends será um array com os produtos que são dependências (extra) do produto atual.
+ * O atributo produtos irá conter um objeto da classe Produto com todos os produtos disponíveis na lanchonete.
+ * Cada produto será representado por um objeto com os atributos descricao, preco e principais.
+ * O principais será um array com o código dos produtos que são dependências (extra) do produto.
  * 
- * O atributo combos irá conter um objeto com todos os combos disponíveis na lanchonete.
+ * O atributo combos irá conter um objeto da classe Combo com todos os combos disponíveis na lanchonete.
+ * Um combo também é um produto, então ele também terá os atributos descricao e preco.
  * 
- * Existem outros jeitos de fazer isso, mas achei o mais prático pois posso validar a existência
- * de um produto ou combo usando cardapio.produtos[produto] ou cardapio.combos[combo] e também
- * posso acessar os atributos de um produto ou combo usando cardapio.produtos[produto].preco
- * 
- * A mesma ideia segue para o método de pagamento.
+ * Para os pagamentos, eu criei um objeto com os métodos de pagamento.
  * Eu usei um objeto para representar os métodos de pagamento, assim posso validar se o método
- * de pagamento existe usando metodoPagamento[metodoDePagamento] e também posso acessar o método
+ * de pagamento existe usando metodoPagamento[metodoDePagamento] e também posso usar o método
  * de pagamento usando metodoPagamento[metodoDePagamento](valorTotal).
  */
 
