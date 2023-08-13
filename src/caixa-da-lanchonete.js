@@ -15,9 +15,12 @@
  * de um produto ou combo usando cardapio.produtos[produto] ou cardapio.combos[combo] e também
  * posso acessar os atributos de um produto ou combo usando cardapio.produtos[produto].preco
  * 
- * O mais prático seria fazer uma interface com algo relacionado a saber o preço e a descrição assim,
- * o combo e o produto extendem essa interface, para manter as ideias de orientação a objetos.
- * Porém o Javascript não tem interfaces, então vamos fazer assim mesmo.
+ * Inclusive, conceitos de orientação a objetos podem ser aplicados aqui para melhorar a legibilidade
+ * do código, evitar repetição e facilitar a manutenção.
+ * A tipagem do Javascript é fraca, então não temos como garantir que o objeto cardapio tenha os
+ * atributos produtos e combos, por exemplo. Mas podemos criar uma classe Cardapio e garantir que
+ * ela tenha os atributos produtos e combos, além de métodos para validar a existência de um produto
+ * ou combo e para acessar os atributos de um produto ou combo.
  * 
  * A mesma ideia segue para o método de pagamento.
  * Eu usei um objeto para representar os métodos de pagamento, assim posso validar se o método
