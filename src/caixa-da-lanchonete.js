@@ -15,18 +15,13 @@
  * de um produto ou combo usando cardapio.produtos[produto] ou cardapio.combos[combo] e também
  * posso acessar os atributos de um produto ou combo usando cardapio.produtos[produto].preco
  * 
- * Inclusive, conceitos de orientação a objetos podem ser aplicados aqui para melhorar a legibilidade
- * do código, evitar repetição e facilitar a manutenção.
- * A tipagem do Javascript é fraca, então não temos como garantir que o objeto cardapio tenha os
- * atributos produtos e combos, por exemplo. Mas podemos criar uma classe Cardapio e garantir que
- * ela tenha os atributos produtos e combos, além de métodos para validar a existência de um produto
- * ou combo e para acessar os atributos de um produto ou combo.
- * 
  * A mesma ideia segue para o método de pagamento.
  * Eu usei um objeto para representar os métodos de pagamento, assim posso validar se o método
  * de pagamento existe usando metodoPagamento[metodoDePagamento] e também posso acessar o método
  * de pagamento usando metodoPagamento[metodoDePagamento](valorTotal).
  */
+
+import Cardapio from "./cardapio.js";
 
 const metodoPagamento = {
     "dinheiro": (valorTotal) => {
@@ -40,53 +35,6 @@ const metodoPagamento = {
     },
 }
 
-const cardapio = {
-    produtos: { // ['cafe,4', 'sanduiche,3', 'queijo,2']
-        'cafe': {
-            "descricao": "Café",
-            "preco": 3.00,
-            depends: []
-        },
-        'chantily': {
-            "descricao": "Chantily (extra do Café)",
-            "preco": 1.5,
-            depends: ['cafe']
-        },
-        'suco': {
-            "descricao": "Suco Natural",
-            "preco": 6.2,
-            depends: []
-        },
-        'sanduiche': {
-            "descricao": "Sanduíche",
-            "preco": 6.5,
-            depends: []
-        },
-        'queijo': {
-            "descricao": "Queijo (extra do Sanduíche)",
-            "preco": 2.0,
-            depends: ['sanduiche']
-        },
-        'salgado': {
-            "descricao": "Salgado",
-            "preco": 7.25,
-            depends: []
-        }
-    },
-    combos: {
-        'combo1': {
-            "descricao": "1 Suco e 1 Sanduíche",
-            "preco": 9.5,
-            produtos: ['suco', 'sanduiche']
-        },
-        'combo2': {
-            "descricao": "1 Café e 1 Sanduíche",
-            "preco": 7.5,
-            produtos: ['cafe', 'sanduiche']
-        }
-    }
-}
-
 class CaixaDaLanchonete {
 
     calcularValorDaCompra(metodoDePagamento, itens) {
@@ -95,6 +43,8 @@ class CaixaDaLanchonete {
         if (!metodoPagamento[metodoDePagamento]) {
             return "Forma de pagamento inválida!";
         }
+
+        let cardapio = new Cardapio();
 
         const carrinho = [];
 
@@ -108,7 +58,7 @@ class CaixaDaLanchonete {
                 return "Quantidade inválida!";
             }
 
-            let produtoDoCardapio = cardapio.produtos[produto] ?? cardapio.combos[produto];
+            let produtoDoCardapio = cardapio.getProduto(produto) ?? cardapio.getCombo(produto);
 
             // verifica existencia do produto no cardapio
 
@@ -116,7 +66,8 @@ class CaixaDaLanchonete {
                 return "Item inválido!";
             }
 
-            carrinho.push({ produto: produto, preco: produtoDoCardapio.preco, quantidade: quantidade });
+            // adiciona o produto no carrinho
+            carrinho.push({ produto: produto, preco: produtoDoCardapio.getPreco(), quantidade: quantidade });
         }
 
         // validar dependências (itens extras)
@@ -124,16 +75,13 @@ class CaixaDaLanchonete {
         for (let item of carrinho) {
             let produto = item.produto;
             
-            if (!cardapio.produtos[produto]) continue;
+            if (!cardapio.hasProduto(produto)) continue; // somente produtos tem dependeciências, combos não
 
-            let produtoDoCardapio = cardapio.produtos[produto];
-
-            for (let principal of produtoDoCardapio.depends) {
+            for (let principal of cardapio.getProduto(produto).getPrincipais()) {
                 if (!carrinho.find(item => item.produto == principal)) {
                     return "Item extra não pode ser pedido sem o principal";
                 }
             }
-            
         }
 
         if (carrinho.length == 0) {
@@ -146,5 +94,7 @@ class CaixaDaLanchonete {
     }
 
 }
+
+console.log(new CaixaDaLanchonete().calcularValorDaCompra('dinheiro', ['combo1,1'])); // R$ 9,03
 
 export { CaixaDaLanchonete };
