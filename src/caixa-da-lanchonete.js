@@ -1,93 +1,68 @@
 
 /**
- * Como a gente precisa usar Javascript e não podemos alterar a estrutura básica do código,
- * vamos usar um objeto para representar o cardápio.
+ * Teremos uma classe CaixaDaLanchonete que irá calcular o valor da compra.
+ * Na classe, o método calcularValorDaCompra irá receber método de pagamento e os itens da compra.
  * 
- * Esse objeto irá conter dois atributos: produtos e combos.
+ * O método de pagamento pode ser dinheiro, crédito ou débito.
+ * Os itens irão ser representados por um array de strings, onde cada string será um item (produto,quantidade)
  * 
- * O atributo produtos irá conter um objeto da classe Produto com todos os produtos disponíveis na lanchonete.
- * Cada produto será representado por um objeto com os atributos descricao, preco e principais.
- * O principais será um array com o código dos produtos que são dependências (extra) do produto.
+ * Cada item pode ser um produto ou um combo.
+ * Um combo também é um produto mas ele não pode ser pedido com itens extras.
+ * Um produto pode ser um item extra que só pode ser pedido junto com um produto principal (independente da ordem).
  * 
- * O atributo combos irá conter um objeto da classe Combo com todos os combos disponíveis na lanchonete.
- * Um combo também é um produto, então ele também terá os atributos descricao e preco.
+ * A estrutura é a seguinte: temos uma classe Comanda que representará o carrinho, e uma classe Cardapio que
+ * representará o cardápio da lanchonete.
+ * 
+ * A classe Comanda irá receber um objeto da classe Cardapio no construtor e será ela a responsável por
+ * adicionar os itens no carrinho e calcular o valor total da compra.
+ * 
+ * A classe Cardapio irá conter os produtos e combos disponíveis na lanchonete.
+ * 
+ * A classe Produto irá conter os atributos descricao, preco e principais.
+ * O atributo principais será um array com o código dos produtos que são dependências (extra) do produto.
+ * 
+ * A classe Combo irá conter os atributos descricao, preco e itens.
+ * O atributo itens será um array com o código dos produtos que fazem parte do combo.
+ * Um combo também é um produto, então ele também terá os atributos descricao e preco herdados da classe Produto.
+ * Mas um combo não pode ser pedido com itens extras, então ele terá o atributo principais sempre vazio.
+ * 
+ * Os métodos de pagamento serão representados por um objeto com os métodos de pagamento.
  * 
  * Para os pagamentos, eu criei um objeto com os métodos de pagamento.
  * Eu usei um objeto para representar os métodos de pagamento, assim posso validar se o método
- * de pagamento existe usando metodoPagamento[metodoDePagamento] e também posso usar o método
- * de pagamento usando metodoPagamento[metodoDePagamento](valorTotal).
+ * de pagamento existe usando METODOS_DE_PAGAMENTO[metodoDePagamento] e também posso usar o método
+ * de pagamento usando METODOS_DE_PAGAMENTO[metodoDePagamento](valorTotal).
  */
 
 import Cardapio from "./cardapio.js";
-
-const metodoPagamento = {
-    "dinheiro": (valorTotal) => {
-        return valorTotal - valorTotal * 0.05; // Pagamento em dinheiro tem 5% de desconto
-    },
-    "debito": (valorTotal) => {
-        return valorTotal;
-    },
-    "credito": (valorTotal) => {
-        return valorTotal + valorTotal * 0.03; // Pagamento a crédito tem acréscimo de 3% no valor total
-    },
-}
+import Comanda from "./comanda.js";
+import { METODOS_DE_PAGAMENTO } from "./pagamento.js";
 
 class CaixaDaLanchonete {
 
     calcularValorDaCompra(metodoDePagamento, itens) {
         // verifica existencia do metodo de pagamento
 
-        if (!metodoPagamento[metodoDePagamento]) {
+        if (!METODOS_DE_PAGAMENTO[metodoDePagamento.toUpperCase()]) {
             return "Forma de pagamento inválida!";
         }
 
-        let cardapio = new Cardapio();
+        let carrinho = new Comanda(new Cardapio());
 
-        const carrinho = [];
+        // adicionar itens no carrinho (no caso de uma lanconete, o carrinho é uma comanda)
 
-        // adicionar itens no carrinho
-
-        for (let item of itens) {
-            let produto = item.split(",")[0];
-            let quantidade = parseInt(item.split(",")[1]);
-
-            if (quantidade <= 0) { // enunciado falou se for zero, mas também não faz sentido se for menor que zero
-                return "Quantidade inválida!";
-            }
-
-            let produtoDoCardapio = cardapio.getProduto(produto) ?? cardapio.getCombo(produto);
-
-            // verifica existencia do produto no cardapio
-
-            if (!produtoDoCardapio) {
-                return "Item inválido!";
-            }
-
-            // adiciona o produto no carrinho
-            carrinho.push({ produto: produto, preco: produtoDoCardapio.getPreco(), quantidade: quantidade });
+        try {
+            carrinho.adicionarItens(itens);
+            carrinho.validarDependencias();
+        } catch (ex) {
+            return ex.message;
         }
 
-        // validar dependências (itens extras)
-
-        for (let item of carrinho) {
-            let produto = item.produto;
-            
-            if (!cardapio.hasProduto(produto)) continue; // somente produtos tem dependeciências, combos não
-
-            for (let principal of cardapio.getProduto(produto).getPrincipais()) {
-                if (!carrinho.find(item => item.produto == principal)) {
-                    return "Item extra não pode ser pedido sem o principal";
-                }
-            }
-        }
-
-        if (carrinho.length == 0) {
+        if (carrinho.getItens().length == 0) {
             return "Não há itens no carrinho de compra!";
         }
 
-        let valorTotal = carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
-
-        return "R$ " + metodoPagamento[metodoDePagamento](valorTotal).toFixed(2).replace(".", ",");
+        return "R$ " + METODOS_DE_PAGAMENTO[metodoDePagamento.toUpperCase()](carrinho.getValorTotal()).toFixed(2).replace(".", ",");
     }
 
 }
