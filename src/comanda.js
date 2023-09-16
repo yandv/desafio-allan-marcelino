@@ -6,15 +6,14 @@ class Comanda {
     }
 
     adicionarItens(itens) {
-        for (let item of itens) {
-            let produto = item.split(",")[0];
-            let quantidade = parseInt(item.split(",")[1]);
+        for (const item of itens) {
+            const [produto, quantidade] = item.split(",");
 
             if (quantidade <= 0) { // enunciado falou se for zero, mas também não faz sentido se for menor que zero
                 throw new Error("Quantidade inválida!");
             }
 
-            let produtoDoCardapio = this.cardapio.getProduto(produto) ?? this.cardapio.getCombo(produto);
+            let produtoDoCardapio = this.cardapio.getProduto(produto);
 
             // verifica existencia do produto no cardapio
 
@@ -31,7 +30,7 @@ class Comanda {
         for (let item of this.itens) {
             let produto = item.produto;
 
-            if (!this.cardapio.hasProduto(produto)) continue; // somente produtos tem dependeciências, combos não
+            if (this.cardapio.getProduto(produto) instanceof Combo) continue; // somente produtos tem dependeciências, combos não
 
             for (let principal of this.cardapio.getProduto(produto).getPrincipais()) {
                 if (!this.itens.find(item => item.produto == principal)) {

@@ -47,22 +47,22 @@ class CaixaDaLanchonete {
             return "Forma de pagamento inválida!";
         }
 
-        let carrinho = new Comanda(new Cardapio());
+        let comanda = new Comanda(new Cardapio());
 
         // adicionar itens no carrinho (no caso de uma lanconete, o carrinho é uma comanda)
 
         try {
-            carrinho.adicionarItens(itens);
-            carrinho.validarDependencias();
+            comanda.adicionarItens(itens);
+            comanda.validarDependencias();
         } catch (ex) {
             return ex.message;
         }
 
-        if (carrinho.getItens().length == 0) {
+        if (comanda.getItens().length == 0) {
             return "Não há itens no carrinho de compra!";
         }
 
-        return "R$ " + METODOS_DE_PAGAMENTO[metodoDePagamento.toUpperCase()](carrinho.getValorTotal()).toFixed(2).replace(".", ",");
+        return "R$ " + METODOS_DE_PAGAMENTO[metodoDePagamento.toUpperCase()](comanda.getValorTotal()).toFixed(2).replace(".", ",");
     }
 
 }

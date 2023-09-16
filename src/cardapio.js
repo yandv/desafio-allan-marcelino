@@ -10,16 +10,12 @@ class Cardapio {
         this.adicionarProduto('queijo', new Produto('Queijo (extra do Sanduíche)', 2.0, ['sanduiche']));
         this.adicionarProduto('salgado', new Produto('Salgado', 7.25, []));
         
-        this.adicionarCombo('combo1', new Combo('1 Suco e 1 Sanduíche', 9.5, ['suco', 'sanduiche']));
-        this.adicionarCombo('combo2', new Combo('1 Café e 1 Sanduíche', 7.5, ['cafe', 'sanduiche']));
+        this.adicionarProduto('combo1', new Combo('1 Suco e 1 Sanduíche', 9.5, ['suco', 'sanduiche']));
+        this.adicionarProduto('combo2', new Combo('1 Café e 1 Sanduíche', 7.5, ['cafe', 'sanduiche']));
     }
 
     adicionarProduto(codigo, produto) {
         this.produtos[codigo] = produto;
-    }
-
-    adicionarCombo(codigo, combo) {
-        this.combos[codigo] = combo;
     }
 
     getProduto(codigo) {
@@ -28,10 +24,6 @@ class Cardapio {
 
     hasProduto(codigo) {
         return this.produtos.hasOwnProperty(codigo);
-    }
-
-    getCombo(codigo) {
-        return this.combos[codigo];
     }
 }
 
