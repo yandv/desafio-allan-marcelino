@@ -1,7 +1,6 @@
 class Cardapio {
     constructor() {
         this.produtos = {};
-        this.combos = {};
 
         this.adicionarProduto('cafe', new Produto('Café', 3.00, []));
         this.adicionarProduto('chantily', new Produto('Chantily (extra do Café)', 1.5, ['cafe']));
