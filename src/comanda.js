@@ -1,3 +1,5 @@
+import { Combo } from "./cardapio.js";
+
 class Comanda {
 
     constructor(cardapio) {

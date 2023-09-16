@@ -20,10 +20,6 @@ class Cardapio {
     getProduto(codigo) {
         return this.produtos[codigo];
     }
-
-    hasProduto(codigo) {
-        return this.produtos.hasOwnProperty(codigo);
-    }
 }
 
 class Produto {
@@ -51,4 +47,6 @@ class Combo extends Produto {
 }
 
 export default Cardapio;
+
+export { Combo, Produto };
 
